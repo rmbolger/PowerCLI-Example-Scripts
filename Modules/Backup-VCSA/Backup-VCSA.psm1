@@ -17,13 +17,13 @@
 		Use this function to backup your VCSA to a remote location
 
 	.EXAMPLE
-        [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$BackupPassword = "VMw@re123"
-        $Comment = "First API Backup"
-        $LocationType = "FTP"
+        [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$BackupPassword = 'VMw@re123'
+        $Comment = 'First API Backup'
+        $LocationType = 'FTP'
         $location = "10.144.99.5/vcsabackup-$((Get-Date).ToString('yyyy-MM-dd-hh-mm'))"
-        $LocationUser = "admin"
-        [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$locationPassword = "VMw@re123"
-		PS C:\> Backup-VCSAToFile -BackupPassword $BackupPassword  -LocationType $LocationType -Location $location -LocationUser $LocationUser -LocationPassword $locationPassword -Comment "This is a demo" -ShowProgress -FullBackup
+        $LocationUser = 'admin'
+        [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$locationPassword = 'VMw@re123'
+		PS C:\> Backup-VCSAToFile -BackupPassword $BackupPassword  -LocationType $LocationType -Location $location -LocationUser $LocationUser -LocationPassword $locationPassword -Comment 'This is a demo' -ShowProgress -FullBackup
 
 	
 	.NOTES
@@ -35,28 +35,28 @@
         -SeatBackup will only backup the config whereas -Fullbackup grabs the historical data as well
 #>
     param (
-        [Parameter(ParameterSetName=’FullBackup’)]
+        [Parameter(ParameterSetName='FullBackup')]
         [switch]$FullBackup,
-        [Parameter(ParameterSetName=’SeatBackup’)]
+        [Parameter(ParameterSetName='SeatBackup')]
         [switch]$SeatBackup,
         [ValidateSet('FTPS', 'HTTP', 'SCP', 'HTTPS', 'FTP')]
-        $LocationType = "FTP",
+        $LocationType = 'FTP',
         $Location,
         $LocationUser,
         [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$LocationPassword,
         [VMware.VimAutomation.Cis.Core.Types.V1.Secret]$BackupPassword,
-        $Comment = "Backup job",
+        $Comment = 'Backup job',
         [switch]$ShowProgress
     )
     Begin {
         if (!($global:DefaultCisServers)){ 
-            [System.Windows.Forms.MessageBox]::Show("It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue" , "Connect to CisServer") | out-null
+            [System.Windows.Forms.MessageBox]::Show('It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue' , 'Connect to CisServer') | out-null
             $Connection = Connect-CisServer $global:DefaultVIServer 
         } else {
             $Connection = $global:DefaultCisServers
         }
-        if ($FullBackup) {$parts = @("common","seat")}
-        if ($SeatBackup) {$parts = @("seat")}
+        if ($FullBackup) {$parts = @('common','seat')}
+        if ($SeatBackup) {$parts = @('seat')}
     }
     Process{
         $BackupAPI = Get-CisService com.vmware.appliance.recovery.backup.job
@@ -80,11 +80,11 @@
             do {
                 $BackupAPI.get("$($BackupJob.ID)") | Select-Object id, progress, state
                 $progress = ($BackupAPI.get("$($BackupJob.ID)").progress)
-                Write-Progress -Activity "Backing up VCSA"  -Status $BackupAPI.get("$($BackupJob.ID)").state -PercentComplete ($BackupAPI.get("$($BackupJob.ID)").progress) -CurrentOperation "$progress% Complete"
+                Write-Progress -Activity 'Backing up VCSA'  -Status $BackupAPI.get("$($BackupJob.ID)").state -PercentComplete ($BackupAPI.get("$($BackupJob.ID)").progress) -CurrentOperation "$progress% Complete"
                 start-sleep -seconds 5
-            } until ($BackupAPI.get("$($BackupJob.ID)").progress -eq 100 -or $BackupAPI.get("$($BackupJob.ID)").state -ne "INPROGRESS")
+            } until ($BackupAPI.get("$($BackupJob.ID)").progress -eq 100 -or $BackupAPI.get("$($BackupJob.ID)").state -ne 'INPROGRESS')
 
-            Write-Progress -Activity "Backing up VCSA" -Completed
+            Write-Progress -Activity 'Backing up VCSA' -Completed
             $BackupAPI.get("$($BackupJob.ID)") | Select-Object id, progress, state
         } 
         Else {
@@ -125,7 +125,7 @@ Function Get-VCSABackupJobs {
     )
     Begin {
         if (!($global:DefaultCisServers)){ 
-            [System.Windows.Forms.MessageBox]::Show("It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue" , "Connect to CisServer") | out-null
+            [System.Windows.Forms.MessageBox]::Show('It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue' , 'Connect to CisServer') | out-null
             $Connection = Connect-CisServer $global:DefaultVIServer 
         } else {
             $Connection = $global:DefaultCisServers
@@ -182,7 +182,7 @@ Function Get-VCSABackupStatus {
     )
  Begin {
         if (!($global:DefaultCisServers)){ 
-            [System.Windows.Forms.MessageBox]::Show("It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue" , "Connect to CisServer") | out-null
+            [System.Windows.Forms.MessageBox]::Show('It appears you have not created a connection to the CisServer. You will now be prompted to enter your vCenter credentials to continue' , 'Connect to CisServer') | out-null
             $Connection = Connect-CisServer $global:DefaultVIServer 
         } else {
             $Connection = $global:DefaultCisServers
