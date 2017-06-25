@@ -78,17 +78,17 @@
 
         If ($ShowProgress){
             do {
-                $BackupAPI.get("$($BackupJob.ID)") | select id, progress, state
+                $BackupAPI.get("$($BackupJob.ID)") | Select-Object id, progress, state
                 $progress = ($BackupAPI.get("$($BackupJob.ID)").progress)
                 Write-Progress -Activity "Backing up VCSA"  -Status $BackupAPI.get("$($BackupJob.ID)").state -PercentComplete ($BackupAPI.get("$($BackupJob.ID)").progress) -CurrentOperation "$progress% Complete"
                 start-sleep -seconds 5
             } until ($BackupAPI.get("$($BackupJob.ID)").progress -eq 100 -or $BackupAPI.get("$($BackupJob.ID)").state -ne "INPROGRESS")
 
             Write-Progress -Activity "Backing up VCSA" -Completed
-            $BackupAPI.get("$($BackupJob.ID)") | select id, progress, state
+            $BackupAPI.get("$($BackupJob.ID)") | Select-Object id, progress, state
         } 
         Else {
-            $BackupJob | select id, progress, state
+            $BackupJob | Select-Object id, progress, state
         }
     }
     End {}
@@ -193,7 +193,7 @@ Function Get-VCSABackupStatus {
     Process{
        
         foreach ($id in $BackupID) {
-            $BackupAPI.get("$id") | select id, progress, state
+            $BackupAPI.get("$id") | Select-Object id, progress, state
         }
         
 
