@@ -201,3 +201,5 @@ Function Get-VCSABackupStatus {
 
     End {}
 }
+
+Export-ModuleMember -Function Backup-VCSAToFile,Get-VCSABackupJobs,Get-VCSABackupStatus
